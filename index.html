@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amber Heart Furnitures</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap">
+<style>
+/* Layout: brochure panels. Thin outlined rounded sheets on woven cream paper, wide display type, one rust accent. */
+:root {
+  --paper: #F6EFE0;
+  --panel: #FBF6EA;
+  --ink: #4A3A30;
+  --muted: #76645A;
+  --rust: #7B3F1E;
+  --teak: #A5693A;
+  --glass: #276B31;
+  --line: rgba(74, 58, 48, 0.55);
+  --hair: rgba(74, 58, 48, 0.16);
+  --weave: rgba(74, 58, 48, 0.035);
+  --font-display: "Italiana", "Didot", Georgia, serif;
+  --font-body: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #211813;
+    --panel: #2A1F18;
+    --ink: #F1E7D4;
+    --muted: #BDAC97;
+    --rust: #E39A68;
+    --teak: #D09560;
+    --glass: #7CC98A;
+    --line: rgba(241, 231, 212, 0.5);
+    --hair: rgba(241, 231, 212, 0.14);
+    --weave: rgba(241, 231, 212, 0.03);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #211813;
+  --panel: #2A1F18;
+  --ink: #F1E7D4;
+  --muted: #BDAC97;
+  --rust: #E39A68;
+  --teak: #D09560;
+  --glass: #7CC98A;
+  --line: rgba(241, 231, 212, 0.5);
+  --hair: rgba(241, 231, 212, 0.14);
+  --weave: rgba(241, 231, 212, 0.03);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, var(--weave) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, var(--weave) 0 1px, transparent 1px 4px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  padding-block: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 0.98; margin: 0; text-wrap: balance; text-transform: uppercase; }
+p { margin: 0; max-width: 62ch; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; border-radius: 4px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.tag { font-style: italic; font-weight: 300; color: var(--muted); }
+
+/* header */
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand svg { width: 54px; height: auto; flex: none; }
+.brand b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
+.brand small { display: block; font-size: 9px; letter-spacing: 0.3em; margin-top: 4px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+nav a { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; padding-block: 6px; border-bottom: 1px solid transparent; }
+nav a:hover { border-color: var(--rust); color: var(--rust); }
+
+/* panels */
+.sheet { border: 1px solid var(--line); border-radius: 30px; background: var(--panel); padding: clamp(24px, 5vw, 56px); position: relative; overflow: hidden; }
+section { padding-block: clamp(28px, 5vw, 56px) 0; }
+.sec-head { display: grid; gap: 12px; margin-bottom: 32px; }
+.sec-head h2 { font-size: clamp(38px, 7vw, 72px); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 32px; align-items: center; }
+.hero h1 { font-size: clamp(52px, 11vw, 124px); margin-block: 14px 22px; }
+.hero h1 em { font-style: normal; color: var(--rust); }
+.hero .lede { color: var(--muted); font-weight: 300; font-size: 16px; }
+.hero-art { min-width: 0; }
+.hero-art svg { width: 100%; height: auto; display: block; }
+.contours { position: absolute; right: -60px; bottom: -70px; width: 360px; opacity: 0.55; pointer-events: none; }
+.contours path { fill: none; stroke: var(--ink); stroke-width: 1; opacity: 0.55; }
+
+/* about */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px 48px; }
+.two > * { min-width: 0; }
+.stack { display: grid; gap: 16px; }
+.vm { display: grid; gap: 28px; }
+.vm h3 { font-size: 34px; margin-bottom: 8px; }
+.facts { display: grid; gap: 0; border-top: 1px solid var(--hair); margin-top: 8px; }
+.facts div { display: grid; grid-template-columns: 8.5em 1fr; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--hair); font-size: 14px; }
+.facts dt { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rust); font-weight: 500; padding-top: 3px; }
+.facts dd { margin: 0; }
+.facts { margin-bottom: 0; }
+
+/* commitments */
+.commit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0; margin-top: 36px; border-top: 1px solid var(--hair); }
+.commit > div { padding: 22px 24px 4px 0; display: grid; gap: 6px; align-content: start; }
+.commit b { font-weight: 600; font-size: 14px; }
+.commit span { color: var(--muted); font-size: 14px; }
+
+/* product */
+.product { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
+.item { border: 1px solid var(--line); border-radius: 26px; padding: 28px; display: grid; gap: 14px; align-content: start; background: var(--paper); min-width: 0; }
+.item h3 { font-size: clamp(42px, 7vw, 64px); }
+.item svg { width: 100%; max-width: 330px; height: auto; justify-self: center; }
+.item ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.item li { padding-left: 18px; position: relative; font-size: 14px; }
+.item li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 8px; height: 1px; background: var(--rust); }
+.item .tag { font-size: 14px; }
+.note { margin-top: 24px; color: var(--muted); font-size: 14px; }
+
+/* materials */
+.mats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--hair); }
+.mats li { display: grid; grid-template-columns: 2.4em 1fr; gap: 4px 8px; padding-block: 14px; border-bottom: 1px solid var(--hair); font-size: 14px; }
+.mats li > span { font-family: var(--font-display); font-size: 22px; color: var(--teak); line-height: 1.1; }
+.mats b { font-weight: 600; display: block; }
+.mats small { font-size: 13px; color: var(--muted); display: block; line-height: 1.5; }
+.make { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px; margin-top: 40px; }
+.make h3 { font-size: 34px; margin-bottom: 14px; }
+.make ol { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; font-size: 14px; }
+.make li::marker { color: var(--rust); font-weight: 600; }
+
+/* compare */
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--hair); }
+thead th { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+thead th.us { color: var(--rust); }
+tbody th { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); font-weight: 500; width: 13%; }
+td.us { background: color-mix(in srgb, var(--rust) 8%, transparent); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+
+/* swot */
+.swot { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.quad { border: 1px solid var(--line); border-radius: 26px; padding: 26px 28px; background: var(--paper); display: grid; gap: 14px; align-content: start; min-width: 0; }
+.quad h3 { font-size: 34px; display: flex; align-items: baseline; gap: 14px; }
+.quad h3 i { font-style: normal; font-size: 56px; color: var(--rust); line-height: 0.8; }
+.quad h4 { margin: 4px 0 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.quad ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.quad li { font-size: 14px; }
+.quad li b { font-weight: 600; }
+.s .quad h3 i, .q-s h3 i { color: var(--glass); }
+
+/* team */
+.chart { display: grid; gap: 0; justify-items: center; }
+.owner { border: 1px solid var(--line); border-radius: 999px; padding: 14px 34px; text-align: center; background: var(--paper); }
+.owner b, .person b { font-family: var(--font-display); font-weight: 400; font-size: 22px; letter-spacing: 0.03em; display: block; line-height: 1.15; }
+.owner span, .person span { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.stem { width: 1px; height: 28px; background: var(--line); }
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 16px; width: 100%; border-top: 1px solid var(--line); padding-top: 28px; position: relative; }
+.person { border: 1px solid var(--line); border-radius: 22px; padding: 20px 18px; text-align: center; background: var(--paper); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.person p { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-top: 8px; text-align: left; }
+.owner-note { max-width: 62ch; text-align: center; color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+/* contact */
+.contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px; align-items: start; }
+.contact h2 { font-size: clamp(44px, 8vw, 84px); }
+.lines { display: grid; gap: 0; border-top: 1px solid var(--hair); }
+.line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-block: 14px; border-bottom: 1px solid var(--hair); }
+.line small { display: block; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.line span { overflow-wrap: anywhere; font-size: 14.5px; user-select: all; }
+.line > div { min-width: 0; }
+.copy { font: inherit; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.copy:hover { border-color: var(--rust); color: var(--rust); }
+
+footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 520px) {
+  .facts div { grid-template-columns: 1fr; gap: 0; }
+  .contours { width: 240px; right: -50px; bottom: -50px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Amber Heart Furnitures home">
+      <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <ellipse cx="60" cy="30" rx="50" ry="17"/>
+        <path d="M14 46c8 6 22 9 46 9s38-3 46-9"/>
+        <path d="M60 40c-8-4-12-9-12-14s9-9 12-3c3-6 12-2 12 3s-4 10-12 14z"/>
+        <path d="M24 55l-9 38M34 56l-6 22M60 57v36M86 56l6 22M96 55l9 38"/>
+      </svg>
+      <span><b>Amber Heart</b><small>FURNITURES</small></span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#katglass">KatGlass</a>
+      <a href="#materials">Materials</a>
+      <a href="#compare">Compare</a>
+      <a href="#swot">SWOT</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="sheet">
+      <svg class="contours" viewBox="0 0 360 360" aria-hidden="true">
+        <path d="M360 90C300 80 250 120 240 180s-40 110-110 120S20 330 0 360"/>
+        <path d="M360 120C310 112 275 142 266 190s-48 120-124 128S40 348 20 360"/>
+        <path d="M360 150C322 144 298 164 292 200s-58 130-138 136S60 362 50 360"/>
+        <path d="M360 180C334 176 320 190 316 214s-64 138-150 142"/>
+        <path d="M360 210C346 208 340 216 338 232s-70 128-160 128"/>
+      </svg>
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Furniture from recovered materials</p>
+          <h1>Give things a <em>new</em> purpose</h1>
+          <p class="lede">Amber Heart Furnitures turns used colored glass bottles and katsa fabric into a lounge set for resting, reading and studying. It is made in San Pablo City, Laguna.</p>
+          <p class="tag" style="margin-top:20px">Comfort meets creativity.</p>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 460 330" role="img" aria-label="Illustration of the KatGlass Lounge Set: a rust-colored bean bag beside a wooden table with a colored glass tabletop">
+            <defs>
+              <clipPath id="top-clip"><polygon points="262,128 300,108 420,108 452,128 420,150 300,150"/></clipPath>
+            </defs>
+            <ellipse cx="230" cy="306" rx="210" ry="14" fill="var(--ink)" opacity="0.09"/>
+            <!-- bean bag -->
+            <path d="M40 270C16 200 36 124 96 96c40-18 72 8 88 42 14-6 30 4 34 26 8 36 10 78-14 104-24 20-120 22-164 2z" fill="var(--rust)"/>
+            <path d="M52 120c34-22 62-6 76 22 12 24 4 52-22 62" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
+            <path d="M92 176c18-12 44-10 62 4" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
+            <path d="M44 252c40 18 120 18 160-2" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.35"/>
+            <!-- table legs and shelf -->
+            <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M284 150v136M296 152v136M428 150v136M440 144v136"/>
+              <path d="M296 270l144-8" />
+              <path d="M284 286l12 2M428 286l12 -6"/>
+            </g>
+            <polygon points="296,262 440,254 440,260 296,268" fill="var(--teak)" opacity="0.7"/>
+            <!-- tabletop -->
+            <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="var(--teak)" opacity="0.28" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+            <g clip-path="url(#top-clip)">
+              <polygon points="300,114 322,112 314,126" fill="var(--glass)"/>
+              <polygon points="330,112 352,114 346,128 328,124" fill="#C7842C"/>
+              <polygon points="360,112 384,112 374,126" fill="#3D8F4A"/>
+              <polygon points="392,112 414,114 406,128 390,124" fill="#8E4A22"/>
+              <polygon points="278,128 300,122 304,136 284,140" fill="#C7842C"/>
+              <polygon points="312,130 336,128 338,142 318,142" fill="var(--glass)"/>
+              <polygon points="346,132 370,130 372,144 350,146" fill="#8E4A22"/>
+              <polygon points="382,132 408,130 416,142 394,146" fill="#C7842C"/>
+              <polygon points="420,120 440,128 424,142" fill="#3D8F4A"/>
+              <polygon points="300,144 320,146 306,150" fill="#8E4A22"/>
+              <polygon points="326,146 346,148 332,150" fill="#3D8F4A"/>
+            </g>
+            <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <section id="about">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">About the company</p>
+          <h2>Warm, recovered, made to be used</h2>
+        </div>
+        <div class="two">
+          <div class="stack">
+            <p>Founded in 2026, Amber Heart Furniture is a furniture manufacturing company that makes lower priced, environmentally friendly and good looking furniture, including lounge sets and tables. It combines sustainability, modern design and everyday usefulness so customers can improve their spaces with practical pieces.</p>
+            <p>The company designs, manufactures and distributes furniture for homes, classrooms and other settings.</p>
+            <p>The name comes from amber, the golden-orange glow of fire. The warmth stands for the drive to repurpose discarded materials, so broken glass becomes the heart of a modern interior.</p>
+          </div>
+          <div class="vm">
+            <div>
+              <h3>Vision</h3>
+              <p>To become an eco-friendly furniture brand that offers quality furniture for better living spaces, with practical and comfortable pieces for homes and schools that support a sustainable environment.</p>
+            </div>
+            <div>
+              <h3>Mission</h3>
+              <p>To design affordable, efficient and sustainable furniture from recycled products such as katsa fabric and glass, including lounge furniture comfortable enough for students at home and in school.</p>
+            </div>
+          </div>
+        </div>
+        <div class="commit">
+          <div><b>Reuse</b><span>Giving recovered materials another application.</span></div>
+          <div><b>Functionality</b><span>Turning materials into useful furniture components.</span></div>
+          <div><b>Creativity</b><span>Combining sustainability with distinctive design.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="katglass">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">Our first product</p>
+          <h2>KatGlass Lounge Set</h2>
+        </div>
+        <p style="margin-bottom:32px">The KatGlass Lounge Set is a katsa fabric bean bag chair and a wooden table with a built-in shelf. The bean bag is filled with fiberfill, so it is soft for reading or resting. The table is decorative and practical: its top is set with broken glass pieces in resin, and the shelf below holds books that students can read for entertainment.</p>
+        <div class="product">
+          <article class="item">
+            <h3>Bean bag chair</h3>
+            <p class="tag">Comfort made for your breaks</p>
+            <svg viewBox="0 0 260 220" role="img" aria-label="Bean bag chair">
+              <ellipse cx="130" cy="200" rx="104" ry="10" fill="var(--ink)" opacity="0.09"/>
+              <path d="M40 180C20 120 34 62 84 40c38-16 70 6 86 40 14-6 30 4 34 26 8 34 8 66-14 84-26 18-96 18-150 2z" fill="var(--rust)"/>
+              <path d="M54 76c30-18 56-4 68 22 10 22 2 48-22 58" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
+              <path d="M84 124c16-10 40-8 56 4" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
+            </svg>
+            <p>Made with katsa fabric and filled with soft fiber fill for a cozy seat that matches the rest of the set.</p>
+            <ul>
+              <li>Soft and comfortable seating</li>
+              <li>Lightweight and easy to move</li>
+              <li>Katsa fabric exterior</li>
+              <li>Fiber-filled cushioning</li>
+            </ul>
+          </article>
+          <article class="item">
+            <h3>KatGlass table</h3>
+            <p class="tag">Beauty meets functionality</p>
+            <svg viewBox="0 0 260 220" role="img" aria-label="KatGlass table with a colored glass top and a shelf">
+              <defs><clipPath id="t2"><polygon points="30,70 62,52 202,52 232,70 202,90 62,90"/></clipPath></defs>
+              <ellipse cx="130" cy="206" rx="104" ry="9" fill="var(--ink)" opacity="0.09"/>
+              <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
+                <path d="M62 90v108M76 92v108M190 90v108M204 90v108"/>
+                <path d="M76 160h128M62 168h128"/>
+              </g>
+              <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="var(--teak)" opacity="0.28"/>
+              <g clip-path="url(#t2)">
+                <polygon points="64,58 92,56 82,72" fill="var(--glass)"/>
+                <polygon points="102,56 132,58 122,74 100,70" fill="#C7842C"/>
+                <polygon points="144,56 176,56 164,72" fill="#3D8F4A"/>
+                <polygon points="184,58 208,60 198,74 180,70" fill="#8E4A22"/>
+                <polygon points="38,70 66,64 70,80 46,84" fill="#C7842C"/>
+                <polygon points="80,74 110,72 114,88 88,88" fill="var(--glass)"/>
+                <polygon points="124,76 154,74 156,90 130,90" fill="#8E4A22"/>
+                <polygon points="168,76 200,74 212,86 176,90" fill="#C7842C"/>
+                <polygon points="208,70 230,70 214,86" fill="#3D8F4A"/>
+              </g>
+              <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+              <rect x="86" y="150" width="14" height="10" fill="var(--rust)" opacity="0.8"/>
+              <rect x="102" y="146" width="10" height="14" fill="var(--glass)" opacity="0.8"/>
+              <rect x="114" y="152" width="16" height="8" fill="var(--teak)" opacity="0.9"/>
+            </svg>
+            <p>More than a table. The top combines an artistic surface of recovered colored glass in resin with practical storage underneath, so books and notebooks stay within reach.</p>
+            <ul>
+              <li>Decorative resin-and-glass tabletop</li>
+              <li>Built-in shelf</li>
+              <li>Functional table surface</li>
+            </ul>
+          </article>
+        </div>
+        <p class="note">Designed with students in mind, for the vacant hours when a comfortable place to rest, read or study is hard to find.</p>
+      </div>
+    </section>
+
+    <section id="materials">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">What goes into it</p>
+          <h2>What makes KatGlass, KatGlass?</h2>
+        </div>
+        <p style="margin-bottom:28px">Two distinctive materials come together in one functional and eye-catching furniture set. Glass is one of the major causes of waste, and large volumes of it still end up in landfill. Textile production adds to solid waste as well, so both get a second use here.</p>
+        <ul class="mats">
+          <li><span>1</span><div><b>Katsa fabric</b><small>Outer covering of the bean bag</small></div></li>
+          <li><span>2</span><div><b>Plastic sack bag</b><small>Protective layer on the bottom panel of the bean bag</small></div></li>
+          <li><span>3</span><div><b>Fiber fill</b><small>Softness, shape and cushioning for the bean bag</small></div></li>
+          <li><span>4</span><div><b>Colored glass bottles</b><small>Broken pieces decorate the tabletop</small></div></li>
+          <li><span>5</span><div><b>Epoxy resin</b><small>Secures the glass and gives a smooth top</small></div></li>
+          <li><span>6</span><div><b>Wood</b><small>Base of the table with the built-in shelf</small></div></li>
+          <li><span>7</span><div><b>Nails</b><small>Assemble the wooden pieces of the base</small></div></li>
+          <li><span>8</span><div><b>Paint</b><small>Enhances the table and adds a protective layer</small></div></li>
+        </ul>
+        <div class="make">
+          <div>
+            <h3>Making the bean bag</h3>
+            <ol>
+              <li>Cut the katsa fabric for the side boxing, top panel and bottom panel.</li>
+              <li>Cut the plastic sack bag to the size of the bottom panel pattern.</li>
+              <li>Sew the katsa bottom panel and the plastic sack bag together.</li>
+              <li>Sew the fabric pieces together, leaving an opening for the fiber fill.</li>
+              <li>Fill with fiber fill until the volume and softness feel right.</li>
+              <li>Close the opening to keep the fill inside.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Making the table</h3>
+            <ol>
+              <li>Measure and cut the wood for the table top and the base.</li>
+              <li>Nail the wooden pieces together.</li>
+              <li>Paint the assembled table.</li>
+              <li>Clean the discarded glass bottles, then break them into shapes using thick fabric as cover and gloves for the hands.</li>
+              <li>Arrange the glass pieces on the table top.</li>
+              <li>Put a thick layer of masking tape around the top edge so the resin cannot leak.</li>
+              <li>Pour epoxy resin over the glass until it is covered.</li>
+              <li>Let it harden for the curing time of the resin used.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="compare">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">Competitive advantage</p>
+          <h2>How we compare</h2>
+        </div>
+        <p style="margin-bottom:28px">Amber Heart competes with established names such as Mandaue Foam and IKEA Philippines. Their furniture overlaps with parts of KatGlass, but none of it combines comfort, storage, design and material reuse in one set made for students.</p>
+        <div class="scroll" tabindex="0" role="region" aria-label="Competitor comparison table">
+          <table>
+            <thead>
+              <tr><th scope="col"></th><th scope="col" class="us">Amber Heart Furnitures</th><th scope="col">Mandaue Foam</th><th scope="col">IKEA PH</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Features</th><td class="us">Bean bag and wooden table with built-in cabinet; tabletop uses repurposed colored glass pieces secured with resin.</td><td>Wide range of furniture, including tables, seating, storage and customized furniture.</td><td>A variety of ready-made furniture for tables, seating and storage.</td></tr>
+              <tr><th scope="row">Pricing</th><td class="us">Affordable and practical furniture set for its target users.</td><td>Different price ranges depending on the furniture and customization.</td><td>Different price points, focused on functional and affordable furniture.</td></tr>
+              <tr><th scope="row">Target audience</th><td class="us">Students and users who need a comfortable space for resting, reading and studying.</td><td>General household, office and commercial furniture consumers.</td><td>General consumers looking for functional, ready-made furniture.</td></tr>
+              <tr><th scope="row">Design and style</th><td class="us">A comfortable lounge design with a glass-decorated tabletop and wooden elements.</td><td>Various furniture styles and designs for different spaces.</td><td>Simple, modern and functional designs.</td></tr>
+              <tr><th scope="row">Unique selling point</th><td class="us">Comfort, functionality, storage, aesthetic design and repurposed materials in one furniture set.</td><td>Wide product selection with customization options.</td><td>Wide range of functional and ready-made furniture.</td></tr>
+              <tr><th scope="row">Competitive advantage</th><td class="us">Focus differentiation through a student-oriented concept that combines seating, table, storage and material reuse.</td><td>Broad product selection and customization services.</td><td>Broad product range and functional furniture designs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Student need: research by Hall and Kapa (2015) found that students value study spaces with comfortable furniture and enough table space.</p>
+      </div>
+    </section>
+
+    <section id="swot">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">Where we stand</p>
+          <h2>SWOT analysis</h2>
+        </div>
+        <div class="swot">
+          <div class="quad q-s">
+            <h3><i>S</i>Strengths</h3>
+            <h4>Company</h4>
+            <ul><li><b>Good location.</b> Many potential customers pass by, which makes it a good place to attract them.</li></ul>
+            <h4>Product</h4>
+            <ul>
+              <li><b>Affordable.</b> Glass tables paired with a soft, bean-shaped couch at a fair price.</li>
+              <li><b>Eco-friendly.</b> Made with recyclable materials such as katsa and broken glass.</li>
+              <li><b>Aesthetic design.</b> Tables come in a variety of designs so customers can choose their own.</li>
+            </ul>
+          </div>
+          <div class="quad">
+            <h3><i>W</i>Weaknesses</h3>
+            <h4>Company</h4>
+            <ul><li><b>New business.</b> Low sales, little brand recognition and few loyal customers so far.</li></ul>
+            <h4>Product</h4>
+            <ul><li><b>Long production.</b> Customization can lengthen production time.</li></ul>
+          </div>
+          <div class="quad">
+            <h3><i>O</i>Opportunities</h3>
+            <h4>Company</h4>
+            <ul>
+              <li><b>Growing eco-conscious market.</b> More consumers favor eco-friendly products.</li>
+              <li><b>Market expansion.</b> Room to grow into regions that prioritize eco-friendly products.</li>
+            </ul>
+            <h4>Product</h4>
+            <ul><li><b>Product expansion.</b> The same sustainable design concept can carry a wider product line.</li></ul>
+          </div>
+          <div class="quad">
+            <h3><i>T</i>Threats</h3>
+            <h4>Company</h4>
+            <ul><li><b>Strong competition.</b> IKEA and Mandaue Foam have strong brands and lower production costs.</li></ul>
+            <h4>Product</h4>
+            <ul><li><b>Logistics.</b> Glass and resin are fragile, and damage in delivery could hurt our reputation.</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="team">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">Group 5 · 2MM1</p>
+          <h2>The team</h2>
+        </div>
+        <div class="chart">
+          <div class="owner"><b>Ma. Francis Lodz Besilos</b><span>Owner Manager</span></div>
+          <p class="owner-note" style="margin-top:12px">Oversees daily operations, directs all departments, sets company goals and makes important business decisions.</p>
+          <div class="stem"></div>
+          <div class="team">
+            <div class="person"><b>Luisa Marie Rañola</b><span>Admin and Finance</span><p>Manages records and documents, tracks income and expenses, prepares budgets and financial reports.</p></div>
+            <div class="person"><b>Angie Formalejo</b><span>Sales and Marketing</span><p>Promotes the furniture, handles customer inquiries, develops sales strategies and keeps customer relationships healthy.</p></div>
+            <div class="person"><b>Michaela Natad</b><span>Purchasing</span><p>Sources furniture and materials, compares supplier prices, monitors orders and inventory.</p></div>
+            <div class="person"><b>Reymark Malasmas</b><span>Staff</span><p>Assists customers, organizes and displays furniture, keeps the showroom clean and orderly.</p></div>
+            <div class="person"><b>Brent Andrei Sorima</b><span>Staff</span><p>Helps with product handling and delivery preparation, checks product condition, assists with inventory and store upkeep.</p></div>
+          </div>
+        </div>
+        <p class="note" style="text-align:center;margin-inline:auto">Submitted to Dr. Madelon C. Briz · Marketing Management (MM 101) · Laguna State Polytechnic University, San Pablo City Campus · November 2026</p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="sheet">
+        <div class="contact">
+          <div class="stack">
+            <p class="eyebrow">Visit or write</p>
+            <h2>Connect with us</h2>
+            <p>The shop sits in a busy commercial district of San Pablo City, close to PUV loading zones, shopping malls and fast-food chains, with hardware stores and bakeries nearby for wood and katsa fabric.</p>
+          </div>
+          <div class="lines">
+            <div class="line"><div><small>Facebook</small><span>AmberHeart Furnitures</span></div></div>
+            <div class="line"><div><small>Email</small><span>amberheartfurnitures@gmail.com</span></div><button class="copy" type="button" data-copy="amberheartfurnitures@gmail.com">Copy</button></div>
+            <div class="line"><div><small>Phone</small><span>+63 912 345 6789</span></div><button class="copy" type="button" data-copy="+63 912 345 6789">Copy</button></div>
+            <div class="line"><div><small>Telephone</small><span>(02) 8321-4567</span></div><button class="copy" type="button" data-copy="(02) 8321-4567">Copy</button></div>
+            <div class="line"><div><small>Location</small><span>San Pablo City, Laguna, Philippines</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Amber Heart Furnitures · Group 5, 2MM1</span>
+    <span>Reuse · Functionality · Creativity</span>
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = btn.getAttribute('data-copy');
+    var done = function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    };
+    var fallback = function () {
+      var span = btn.parentElement.querySelector('span');
+      try {
+        var r = document.createRange();
+        r.selectNodeContents(span);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+      } catch (e) {}
+      btn.textContent = 'Selected';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } catch (e) { fallback(); }
+  });
+});
+</script>
+
+</body>
+</html>
