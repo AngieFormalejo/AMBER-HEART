@@ -7,51 +7,45 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap">
 <style>
-/* Layout: brochure panels. Thin outlined rounded sheets on woven cream paper, wide display type, one rust accent. */
+/* Layout: brochure panels on woven cream paper. Interactive KatGlass viewer up top, then explorers, stepper, inquiry form. */
 :root {
   --paper: #F6EFE0;
   --panel: #FBF6EA;
   --ink: #4A3A30;
-  --muted: #76645A;
+  --muted: #6F5E54;
   --rust: #7B3F1E;
   --teak: #A5693A;
   --glass: #276B31;
+  --glow: rgba(217, 146, 58, 0.22);
   --line: rgba(74, 58, 48, 0.55);
   --hair: rgba(74, 58, 48, 0.16);
   --weave: rgba(74, 58, 48, 0.035);
+  --on-rust: #FBF6EA;
   --font-display: "Italiana", "Didot", Georgia, serif;
   --font-body: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* live product colors, changed by the swatches */
+  --bag: #7B3F1E;
+  --gc1: #276B31; --gc2: #C7842C; --gc3: #3D8F4A; --gc4: #8E4A22;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #211813;
-    --panel: #2A1F18;
-    --ink: #F1E7D4;
-    --muted: #BDAC97;
-    --rust: #E39A68;
-    --teak: #D09560;
-    --glass: #7CC98A;
-    --line: rgba(241, 231, 212, 0.5);
-    --hair: rgba(241, 231, 212, 0.14);
-    --weave: rgba(241, 231, 212, 0.03);
+    --paper: #1F1611; --panel: #2A1F18; --ink: #F1E7D4; --muted: #C2B19C;
+    --rust: #E39A68; --teak: #D09560; --glass: #7CC98A; --glow: rgba(227, 154, 104, 0.16);
+    --line: rgba(241, 231, 212, 0.5); --hair: rgba(241, 231, 212, 0.14); --weave: rgba(241, 231, 212, 0.03);
+    --on-rust: #1F1611;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #211813;
-  --panel: #2A1F18;
-  --ink: #F1E7D4;
-  --muted: #BDAC97;
-  --rust: #E39A68;
-  --teak: #D09560;
-  --glass: #7CC98A;
-  --line: rgba(241, 231, 212, 0.5);
-  --hair: rgba(241, 231, 212, 0.14);
-  --weave: rgba(241, 231, 212, 0.03);
+  --paper: #1F1611; --panel: #2A1F18; --ink: #F1E7D4; --muted: #C2B19C;
+  --rust: #E39A68; --teak: #D09560; --glass: #7CC98A; --glow: rgba(227, 154, 104, 0.16);
+  --line: rgba(241, 231, 212, 0.5); --hair: rgba(241, 231, 212, 0.14); --weave: rgba(241, 231, 212, 0.03);
+  --on-rust: #1F1611;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 body {
   background-color: var(--paper);
   background-image:
@@ -66,238 +60,341 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-.wrap { max-width: 1080px; margin-inline: auto; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--paper); }
+.wrap { max-width: 1100px; margin-inline: auto; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 0.98; margin: 0; text-wrap: balance; text-transform: uppercase; }
 p { margin: 0; max-width: 62ch; }
 a { color: inherit; }
-a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; border-radius: 4px; }
+button { font: inherit; color: inherit; letter-spacing: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; border-radius: 6px; }
 .eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
 .tag { font-style: italic; font-weight: 300; color: var(--muted); }
 
 /* header */
-.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px; }
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.brand svg { width: 54px; height: auto; flex: none; }
-.brand b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
-.brand small { display: block; font-size: 9px; letter-spacing: 0.3em; margin-top: 4px; }
-nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
-nav a { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; padding-block: 6px; border-bottom: 1px solid transparent; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--paper) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--hair); }
+.bar-in { display: flex; align-items: center; gap: 16px; padding-block: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex: none; }
+.brand svg { width: 44px; height: auto; }
+.brand b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1; text-transform: uppercase; }
+.brand small { display: block; font-size: 8.5px; letter-spacing: 0.3em; margin-top: 3px; }
+nav { display: flex; gap: 4px 20px; margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+nav::-webkit-scrollbar { display: none; }
+nav a { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; padding-block: 8px; border-bottom: 1px solid transparent; white-space: nowrap; }
 nav a:hover { border-color: var(--rust); color: var(--rust); }
+.theme { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: transparent; cursor: pointer; display: grid; place-items: center; }
+.theme:hover { border-color: var(--rust); color: var(--rust); }
+.theme svg { width: 18px; height: 18px; }
+@media (max-width: 640px) { .brand span { display: none; } }
 
 /* panels */
-.sheet { border: 1px solid var(--line); border-radius: 30px; background: var(--panel); padding: clamp(24px, 5vw, 56px); position: relative; overflow: hidden; }
-section { padding-block: clamp(28px, 5vw, 56px) 0; }
-.sec-head { display: grid; gap: 12px; margin-bottom: 32px; }
+.sheet { border: 1px solid var(--line); border-radius: 30px; background: var(--panel); padding: clamp(22px, 5vw, 56px); position: relative; overflow: hidden; }
+section { padding-top: clamp(24px, 4vw, 44px); }
+.sec-head { display: grid; gap: 12px; margin-bottom: 28px; }
 .sec-head h2 { font-size: clamp(38px, 7vw, 72px); }
+.btn { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 9px 20px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+.btn:hover { border-color: var(--rust); color: var(--rust); }
+.btn.solid { background: var(--rust); color: var(--on-rust); border-color: var(--rust); }
+.btn.solid:hover { background: color-mix(in srgb, var(--rust) 86%, var(--ink)); color: var(--on-rust); }
+.btn[disabled] { opacity: 0.4; cursor: default; }
 
 /* hero */
-.hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 32px; align-items: center; }
-.hero h1 { font-size: clamp(52px, 11vw, 124px); margin-block: 14px 22px; }
+.hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 28px 40px; align-items: center; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: clamp(52px, 10vw, 118px); margin-block: 14px 20px; }
 .hero h1 em { font-style: normal; color: var(--rust); }
-.hero .lede { color: var(--muted); font-weight: 300; font-size: 16px; }
-.hero-art { min-width: 0; }
-.hero-art svg { width: 100%; height: auto; display: block; }
-.contours { position: absolute; right: -60px; bottom: -70px; width: 360px; opacity: 0.55; pointer-events: none; }
-.contours path { fill: none; stroke: var(--ink); stroke-width: 1; opacity: 0.55; }
+.lede { color: var(--muted); font-weight: 300; font-size: 16px; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.viewer { display: grid; gap: 16px; }
+.stage { position: relative; border-radius: 26px; background: radial-gradient(ellipse at 55% 55%, var(--glow), transparent 68%); padding: 8px 0 0; }
+.stage svg { width: 100%; height: auto; display: block; }
+.stage .hint { position: absolute; right: 8px; bottom: 6px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.pick { display: grid; gap: 8px; }
+.pick > span { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.sws { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--hair); background: transparent; border-radius: 999px; padding: 5px 14px 5px 6px; font-size: 12.5px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.sw i { width: 20px; height: 20px; border-radius: 50%; background: var(--c); border: 1px solid var(--line); display: block; }
+.sw i.mix { background: conic-gradient(#276B31 0 25%, #C7842C 0 50%, #8E4A22 0 75%, #3D8F4A 0); }
+.sw:hover { border-color: var(--line); }
+.sw[aria-pressed="true"] { border-color: var(--rust); background: color-mix(in srgb, var(--rust) 12%, transparent); }
+.pickfoot { font-size: 12px; color: var(--muted); }
+.contours { position: absolute; right: -70px; bottom: -80px; width: 380px; opacity: 0.5; pointer-events: none; }
+.contours path { fill: none; stroke: var(--ink); stroke-width: 1; opacity: 0.5; }
+.bob { animation: bob 7s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
-/* about */
-.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px 48px; }
-.two > * { min-width: 0; }
+/* shard fills (set by swatches) */
+.g1 { fill: var(--gc1); } .g2 { fill: var(--gc2); } .g3 { fill: var(--gc3); } .g4 { fill: var(--gc4); }
+.shard { opacity: 0.92; stroke: rgba(255,255,255,0.35); stroke-width: 0.8; transition: fill 0.35s; }
+.bagfill { fill: var(--bag); transition: fill 0.35s; stroke: var(--ink); stroke-width: 1.8; }
+.fold { fill: none; stroke: rgba(255,255,255,0.35); stroke-width: 2; }
+
+/* why / commitments */
+.why { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px 48px; align-items: start; }
+.why > * { min-width: 0; }
 .stack { display: grid; gap: 16px; }
-.vm { display: grid; gap: 28px; }
-.vm h3 { font-size: 34px; margin-bottom: 8px; }
-.facts { display: grid; gap: 0; border-top: 1px solid var(--hair); margin-top: 8px; }
-.facts div { display: grid; grid-template-columns: 8.5em 1fr; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--hair); font-size: 14px; }
-.facts dt { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rust); font-weight: 500; padding-top: 3px; }
-.facts dd { margin: 0; }
-.facts { margin-bottom: 0; }
+.commit { display: grid; gap: 0; border-top: 1px solid var(--hair); margin-top: 8px; }
+.commit button { text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--hair); padding: 14px 0; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+.commit b { font-family: var(--font-display); font-weight: 400; font-size: 26px; text-transform: uppercase; line-height: 1.1; }
+.commit .plus { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; font-size: 16px; line-height: 1; transition: transform 0.25s, background 0.25s; }
+.commit button[aria-expanded="true"] .plus { transform: rotate(45deg); background: var(--rust); color: var(--on-rust); border-color: var(--rust); }
+.commit .more { grid-column: 1 / -1; display: none; color: var(--muted); font-size: 14px; max-width: 52ch; padding-bottom: 4px; }
+.commit button[aria-expanded="true"] .more { display: block; }
+.life { border: 1px solid var(--line); border-radius: 26px; padding: 22px; display: grid; gap: 14px; background: var(--paper); }
+.life figure { margin: 0; display: grid; gap: 10px; justify-items: center; }
+.life svg { width: 100%; max-width: 340px; height: auto; }
+.life figcaption { font-size: 13.5px; color: var(--muted); text-align: center; min-height: 3.2em; max-width: 36ch; }
+.toggle { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.toggle button { border: 0; background: transparent; border-radius: 999px; padding: 8px 12px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.toggle button[aria-pressed="true"] { background: var(--rust); color: var(--on-rust); }
 
-/* commitments */
-.commit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0; margin-top: 36px; border-top: 1px solid var(--hair); }
-.commit > div { padding: 22px 24px 4px 0; display: grid; gap: 6px; align-content: start; }
-.commit b { font-weight: 600; font-size: 14px; }
-.commit span { color: var(--muted); font-size: 14px; }
+/* tabs and product */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tab { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 9px 22px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--rust); color: var(--on-rust); border-color: var(--rust); }
+.pane { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px 44px; align-items: center; border: 1px solid var(--line); border-radius: 26px; padding: clamp(20px, 4vw, 36px); background: var(--paper); }
+.pane[hidden] { display: none !important; }
+.pane > * { min-width: 0; }
+.pane h3 { font-size: clamp(44px, 8vw, 76px); margin-bottom: 8px; }
+.pane svg { width: 100%; max-width: 360px; height: auto; justify-self: center; }
+.feats { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.feats li { padding-left: 20px; position: relative; font-size: 14px; }
+.feats li::before { content: ""; position: absolute; left: 0; top: 0.78em; width: 9px; height: 1px; background: var(--rust); }
 
-/* product */
-.product { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
-.item { border: 1px solid var(--line); border-radius: 26px; padding: 28px; display: grid; gap: 14px; align-content: start; background: var(--paper); min-width: 0; }
-.item h3 { font-size: clamp(42px, 7vw, 64px); }
-.item svg { width: 100%; max-width: 330px; height: auto; justify-self: center; }
-.item ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
-.item li { padding-left: 18px; position: relative; font-size: 14px; }
-.item li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 8px; height: 1px; background: var(--rust); }
-.item .tag { font-size: 14px; }
-.note { margin-top: 24px; color: var(--muted); font-size: 14px; }
+/* materials explorer */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.mat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 24px; align-items: start; }
+.mat-grid > * { min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--hair); background: var(--paper); border-radius: 16px; padding: 10px 16px; font-size: 13.5px; cursor: pointer; text-align: left; transition: border-color 0.2s, transform 0.2s; }
+.chip:hover { border-color: var(--line); transform: translateY(-1px); }
+.chip[aria-pressed="true"] { border-color: var(--rust); background: color-mix(in srgb, var(--rust) 12%, var(--paper)); }
+.chip[hidden] { display: none !important; }
+.chip small { display: block; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rust); }
+.detail { border: 1px solid var(--line); border-radius: 26px; padding: 26px 28px; background: var(--paper); display: grid; gap: 10px; min-height: 190px; align-content: start; }
+.detail h3 { font-size: 40px; }
+.detail .where { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.detail .swatch { width: 44px; height: 6px; border-radius: 3px; background: var(--teak); }
 
-/* materials */
-.mats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--hair); }
-.mats li { display: grid; grid-template-columns: 2.4em 1fr; gap: 4px 8px; padding-block: 14px; border-bottom: 1px solid var(--hair); font-size: 14px; }
-.mats li > span { font-family: var(--font-display); font-size: 22px; color: var(--teak); line-height: 1.1; }
-.mats b { font-weight: 600; display: block; }
-.mats small { font-size: 13px; color: var(--muted); display: block; line-height: 1.5; }
-.make { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px; margin-top: 40px; }
-.make h3 { font-size: 34px; margin-bottom: 14px; }
-.make ol { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; font-size: 14px; }
-.make li::marker { color: var(--rust); font-weight: 600; }
+/* stepper */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px 40px; align-items: start; }
+.steps > * { min-width: 0; }
+.sl { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hair); }
+.sl button { width: 100%; text-align: left; display: grid; grid-template-columns: 2.2em 1fr; gap: 8px; padding: 12px 4px; border: 0; border-bottom: 1px solid var(--hair); background: transparent; cursor: pointer; font-size: 14px; line-height: 1.5; transition: background 0.2s; }
+.sl button:hover { background: color-mix(in srgb, var(--rust) 6%, transparent); }
+.sl button span { font-family: var(--font-display); font-size: 22px; color: var(--muted); line-height: 1.1; }
+.sl button[aria-current="step"] { background: color-mix(in srgb, var(--rust) 10%, transparent); }
+.sl button[aria-current="step"] span { color: var(--rust); }
+.sl button.done span { color: var(--glass); }
+.now { border: 1px solid var(--line); border-radius: 26px; padding: 26px 28px; background: var(--paper); display: grid; gap: 14px; align-content: start; }
+.now .count { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.now h3 { font-size: clamp(34px, 5vw, 48px); }
+.bar-track { height: 4px; border-radius: 2px; background: var(--hair); overflow: hidden; }
+.bar-fill { height: 100%; width: 0; background: var(--rust); transition: width 0.35s; }
+.now .row { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* compare */
-.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); }
-table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; line-height: 1.55; }
-th, td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--hair); }
-thead th { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
-thead th.us { color: var(--rust); }
-tbody th { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); font-weight: 500; width: 13%; }
-td.us { background: color-mix(in srgb, var(--rust) 8%, transparent); }
-tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+/* order form */
+.form { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 28px 44px; align-items: start; }
+.form > * { min-width: 0; }
+.fields { display: grid; gap: 14px; }
+label { display: grid; gap: 6px; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+input, select, textarea { font: inherit; font-size: 14.5px; letter-spacing: 0.02em; text-transform: none; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 11px 14px; width: 100%; }
+textarea { resize: vertical; min-height: 84px; }
+.summary { border: 1px solid var(--hair); border-radius: 16px; padding: 12px 16px; font-size: 13.5px; color: var(--muted); background: var(--paper); }
+.summary b { color: var(--ink); font-weight: 500; }
+.out { border: 1px solid var(--line); border-radius: 26px; padding: 24px 26px; background: var(--paper); display: grid; gap: 14px; }
+.out h3 { font-size: 34px; }
+.out textarea { min-height: 200px; font-size: 13.5px; line-height: 1.6; }
+.out .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { font-size: 12.5px; color: var(--glass); min-height: 1.4em; }
 
-/* swot */
-.swot { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
-.quad { border: 1px solid var(--line); border-radius: 26px; padding: 26px 28px; background: var(--paper); display: grid; gap: 14px; align-content: start; min-width: 0; }
-.quad h3 { font-size: 34px; display: flex; align-items: baseline; gap: 14px; }
-.quad h3 i { font-style: normal; font-size: 56px; color: var(--rust); line-height: 0.8; }
-.quad h4 { margin: 4px 0 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
-.quad ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.quad li { font-size: 14px; }
-.quad li b { font-weight: 600; }
-.s .quad h3 i, .q-s h3 i { color: var(--glass); }
+/* faq */
+.faq { border-top: 1px solid var(--hair); max-width: 800px; }
+.faq details { border-bottom: 1px solid var(--hair); }
+.faq summary { cursor: pointer; list-style: none; padding: 16px 40px 16px 0; font-weight: 500; font-size: 15px; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 22px; font-weight: 300; color: var(--rust); transition: transform 0.2s; }
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq details p { padding-bottom: 18px; color: var(--muted); font-size: 14.5px; }
 
 /* team */
-.chart { display: grid; gap: 0; justify-items: center; }
-.owner { border: 1px solid var(--line); border-radius: 999px; padding: 14px 34px; text-align: center; background: var(--paper); }
-.owner b, .person b { font-family: var(--font-display); font-weight: 400; font-size: 22px; letter-spacing: 0.03em; display: block; line-height: 1.15; }
-.owner span, .person span { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
-.stem { width: 1px; height: 28px; background: var(--line); }
-.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 16px; width: 100%; border-top: 1px solid var(--line); padding-top: 28px; position: relative; }
-.person { border: 1px solid var(--line); border-radius: 22px; padding: 20px 18px; text-align: center; background: var(--paper); display: grid; gap: 6px; align-content: start; min-width: 0; }
-.person p { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-top: 8px; text-align: left; }
-.owner-note { max-width: 62ch; text-align: center; color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 14px; }
+.person { border: 1px solid var(--line); border-radius: 22px; padding: 20px 18px; background: var(--paper); display: grid; gap: 4px; align-content: start; min-width: 0; transition: transform 0.2s, border-color 0.2s; }
+.person:hover { transform: translateY(-3px); border-color: var(--rust); }
+.person b { font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.15; }
+.person span { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
+.person p { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
 
 /* contact */
 .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px; align-items: start; }
+.contact > * { min-width: 0; }
 .contact h2 { font-size: clamp(44px, 8vw, 84px); }
-.lines { display: grid; gap: 0; border-top: 1px solid var(--hair); }
+.lines { border-top: 1px solid var(--hair); }
 .line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-block: 14px; border-bottom: 1px solid var(--hair); }
 .line small { display: block; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rust); font-weight: 500; }
-.line span { overflow-wrap: anywhere; font-size: 14.5px; user-select: all; }
+.line span { overflow-wrap: anywhere; font-size: 14.5px; }
 .line > div { min-width: 0; }
-.copy { font: inherit; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.copy { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
 .copy:hover { border-color: var(--rust); color: var(--rust); }
+footer { padding-block: 36px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 12px; color: var(--muted); }
 
-footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 12px; color: var(--muted); }
-
-@media (max-width: 520px) {
-  .facts div { grid-template-columns: 1fr; gap: 0; }
-  .contours { width: 240px; right: -50px; bottom: -50px; }
-}
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@media (max-width: 520px) { .contours { width: 240px; right: -50px; bottom: -50px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <header class="top">
-    <a class="brand" href="#top" aria-label="Amber Heart Furnitures home">
-      <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <ellipse cx="60" cy="30" rx="50" ry="17"/>
-        <path d="M14 46c8 6 22 9 46 9s38-3 46-9"/>
-        <path d="M60 40c-8-4-12-9-12-14s9-9 12-3c3-6 12-2 12 3s-4 10-12 14z"/>
-        <path d="M24 55l-9 38M34 56l-6 22M60 57v36M86 56l6 22M96 55l9 38"/>
-      </svg>
-      <span><b>Amber Heart</b><small>FURNITURES</small></span>
-    </a>
-    <nav aria-label="Sections">
-      <a href="#about">About</a>
-      <a href="#katglass">KatGlass</a>
-      <a href="#materials">Materials</a>
-      <a href="#compare">Compare</a>
-      <a href="#swot">SWOT</a>
-      <a href="#team">Team</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <header class="bar">
+    <div class="bar-in">
+      <a class="brand" href="#top" aria-label="Amber Heart Furnitures home">
+        <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <ellipse cx="60" cy="30" rx="50" ry="17"/>
+          <path d="M14 46c8 6 22 9 46 9s38-3 46-9"/>
+          <path d="M60 40c-8-4-12-9-12-14s9-9 12-3c3-6 12-2 12 3s-4 10-12 14z"/>
+          <path d="M24 55l-9 38M34 56l-6 22M60 57v36M86 56l6 22M96 55l9 38"/>
+        </svg>
+        <span><b>Amber Heart</b><small>FURNITURES</small></span>
+      </a>
+      <nav aria-label="Sections">
+        <a href="#why">Why us</a>
+        <a href="#katglass">KatGlass</a>
+        <a href="#materials">Materials</a>
+        <a href="#made">How it's made</a>
+        <a href="#order">Ask for yours</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
   </header>
 
   <main id="top">
-    <div class="sheet">
+    <div class="sheet" style="margin-top:20px">
       <svg class="contours" viewBox="0 0 360 360" aria-hidden="true">
         <path d="M360 90C300 80 250 120 240 180s-40 110-110 120S20 330 0 360"/>
         <path d="M360 120C310 112 275 142 266 190s-48 120-124 128S40 348 20 360"/>
         <path d="M360 150C322 144 298 164 292 200s-58 130-138 136S60 362 50 360"/>
         <path d="M360 180C334 176 320 190 316 214s-64 138-150 142"/>
-        <path d="M360 210C346 208 340 216 338 232s-70 128-160 128"/>
       </svg>
       <div class="hero">
         <div>
-          <p class="eyebrow">Furniture from recovered materials</p>
+          <p class="eyebrow">AmberHeart Furnitures presents</p>
           <h1>Give things a <em>new</em> purpose</h1>
-          <p class="lede">Amber Heart Furnitures turns used colored glass bottles and katsa fabric into a lounge set for resting, reading and studying. It is made in San Pablo City, Laguna.</p>
-          <p class="tag" style="margin-top:20px">Comfort meets creativity.</p>
+          <p class="lede">Furniture made from recovered colored glass bottles and katsa fabric, built in San Pablo City. Pick your colors on the right and see the KatGlass Lounge Set change.</p>
+          <p class="tag" style="margin-top:18px">Comfort meets creativity.</p>
+          <div class="cta">
+            <a class="btn solid" href="#order" style="text-decoration:none">Ask for your set</a>
+            <a class="btn" href="#katglass" style="text-decoration:none">See the set</a>
+          </div>
         </div>
-        <div class="hero-art">
-          <svg viewBox="0 0 460 330" role="img" aria-label="Illustration of the KatGlass Lounge Set: a rust-colored bean bag beside a wooden table with a colored glass tabletop">
-            <defs>
-              <clipPath id="top-clip"><polygon points="262,128 300,108 420,108 452,128 420,150 300,150"/></clipPath>
-            </defs>
-            <ellipse cx="230" cy="306" rx="210" ry="14" fill="var(--ink)" opacity="0.09"/>
-            <!-- bean bag -->
-            <path d="M40 270C16 200 36 124 96 96c40-18 72 8 88 42 14-6 30 4 34 26 8 36 10 78-14 104-24 20-120 22-164 2z" fill="var(--rust)"/>
-            <path d="M52 120c34-22 62-6 76 22 12 24 4 52-22 62" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
-            <path d="M92 176c18-12 44-10 62 4" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
-            <path d="M44 252c40 18 120 18 160-2" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.35"/>
-            <!-- table legs and shelf -->
-            <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
-              <path d="M284 150v136M296 152v136M428 150v136M440 144v136"/>
-              <path d="M296 270l144-8" />
-              <path d="M284 286l12 2M428 286l12 -6"/>
-            </g>
-            <polygon points="296,262 440,254 440,260 296,268" fill="var(--teak)" opacity="0.7"/>
-            <!-- tabletop -->
-            <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="var(--teak)" opacity="0.28" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
-            <g clip-path="url(#top-clip)">
-              <polygon points="300,114 322,112 314,126" fill="var(--glass)"/>
-              <polygon points="330,112 352,114 346,128 328,124" fill="#C7842C"/>
-              <polygon points="360,112 384,112 374,126" fill="#3D8F4A"/>
-              <polygon points="392,112 414,114 406,128 390,124" fill="#8E4A22"/>
-              <polygon points="278,128 300,122 304,136 284,140" fill="#C7842C"/>
-              <polygon points="312,130 336,128 338,142 318,142" fill="var(--glass)"/>
-              <polygon points="346,132 370,130 372,144 350,146" fill="#8E4A22"/>
-              <polygon points="382,132 408,130 416,142 394,146" fill="#C7842C"/>
-              <polygon points="420,120 440,128 424,142" fill="#3D8F4A"/>
-              <polygon points="300,144 320,146 306,150" fill="#8E4A22"/>
-              <polygon points="326,146 346,148 332,150" fill="#3D8F4A"/>
-            </g>
-            <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
-          </svg>
+        <div class="viewer">
+          <div class="stage">
+            <svg viewBox="0 0 470 330" role="img" aria-label="KatGlass Lounge Set preview: a bean bag chair beside a wooden table with a colored glass top">
+              <ellipse cx="235" cy="306" rx="212" ry="14" fill="var(--ink)" opacity="0.09"/>
+              <g class="bob">
+                <path class="bagfill" d="M40 270C16 200 36 124 96 96c40-18 72 8 88 42 14-6 30 4 34 26 8 36 10 78-14 104-24 20-120 22-164 2z"/>
+                <path class="fold" d="M52 120c34-22 62-6 76 22 12 24 4 52-22 62"/>
+                <path class="fold" d="M92 176c18-12 44-10 62 4"/>
+                <path class="fold" d="M44 252c40 18 120 18 160-2"/>
+              </g>
+              <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
+                <path d="M284 150v136M296 152v136M428 150v136M440 144v136"/>
+                <path d="M296 270l144-8"/>
+              </g>
+              <polygon points="296,262 440,254 440,260 296,268" fill="var(--teak)" opacity="0.7"/>
+              <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="var(--teak)" opacity="0.28"/>
+              <clipPath id="hc"><polygon points="262,128 300,108 420,108 452,128 420,150 300,150"/></clipPath>
+              <g clip-path="url(#hc)">
+                <polygon class="shard g1" points="300,114 322,112 314,126"/>
+                <polygon class="shard g2" points="330,112 352,114 346,128 328,124"/>
+                <polygon class="shard g3" points="360,112 384,112 374,126"/>
+                <polygon class="shard g4" points="392,112 414,114 406,128 390,124"/>
+                <polygon class="shard g2" points="278,128 300,122 304,136 284,140"/>
+                <polygon class="shard g1" points="312,130 336,128 338,142 318,142"/>
+                <polygon class="shard g4" points="346,132 370,130 372,144 350,146"/>
+                <polygon class="shard g2" points="382,132 408,130 416,142 394,146"/>
+                <polygon class="shard g3" points="420,120 440,128 424,142"/>
+                <polygon class="shard g4" points="300,144 320,146 306,150"/>
+                <polygon class="shard g3" points="326,146 346,148 332,150"/>
+              </g>
+              <polygon points="262,128 300,108 420,108 452,128 420,150 300,150" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="pick">
+            <span>Glass color</span>
+            <div class="sws" id="glassSw" role="group" aria-label="Glass color">
+              <button class="sw" type="button" data-k="mixed" aria-pressed="true"><i class="mix"></i>Mixed</button>
+              <button class="sw" type="button" data-k="green" aria-pressed="false" style="--c:#276B31"><i></i>Green</button>
+              <button class="sw" type="button" data-k="amber" aria-pressed="false" style="--c:#D99A3A"><i></i>Amber</button>
+              <button class="sw" type="button" data-k="brown" aria-pressed="false" style="--c:#8E4A22"><i></i>Brown</button>
+            </div>
+          </div>
+          <div class="pick">
+            <span>Bean bag color</span>
+            <div class="sws" id="bagSw" role="group" aria-label="Bean bag color">
+              <button class="sw" type="button" data-k="rust" aria-pressed="true" style="--c:#7B3F1E"><i></i>Rust</button>
+              <button class="sw" type="button" data-k="espresso" aria-pressed="false" style="--c:#4A3A30"><i></i>Espresso</button>
+              <button class="sw" type="button" data-k="olive" aria-pressed="false" style="--c:#6B6B3A"><i></i>Olive</button>
+              <button class="sw" type="button" data-k="sand" aria-pressed="false" style="--c:#C9B48F"><i></i>Sand</button>
+            </div>
+            <p class="pickfoot">This is a color preview. Real glass and fabric colors depend on the bottles and katsa we have recovered.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <section id="about">
+    <section id="why">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">About the company</p>
-          <h2>Warm, recovered, made to be used</h2>
+          <p class="eyebrow">Our idea</p>
+          <h2>Old bottles. New heart.</h2>
         </div>
-        <div class="two">
+        <div class="why">
           <div class="stack">
-            <p>Founded in 2026, Amber Heart Furniture is a furniture manufacturing company that makes lower priced, environmentally friendly and good looking furniture, including lounge sets and tables. It combines sustainability, modern design and everyday usefulness so customers can improve their spaces with practical pieces.</p>
-            <p>The company designs, manufactures and distributes furniture for homes, classrooms and other settings.</p>
-            <p>The name comes from amber, the golden-orange glow of fire. The warmth stands for the drive to repurpose discarded materials, so broken glass becomes the heart of a modern interior.</p>
-          </div>
-          <div class="vm">
-            <div>
-              <h3>Vision</h3>
-              <p>To become an eco-friendly furniture brand that offers quality furniture for better living spaces, with practical and comfortable pieces for homes and schools that support a sustainable environment.</p>
-            </div>
-            <div>
-              <h3>Mission</h3>
-              <p>To design affordable, efficient and sustainable furniture from recycled products such as katsa fabric and glass, including lounge furniture comfortable enough for students at home and in school.</p>
+            <p>Amber Heart Furnitures turns recovered materials into furniture that works and looks good. Pieces of recovered colored glass bottles go into the tabletop, and katsa fabric covers the bean bag, so both materials get another purpose.</p>
+            <p>Founded in 2026, we make lower priced, environmentally friendly furniture for homes, classrooms and other spaces.</p>
+            <div class="commit" id="commit">
+              <button type="button" aria-expanded="false"><b>Reuse</b><span class="plus" aria-hidden="true">+</span><span class="more">Giving recovered materials another application, so glass bottles and fabric do not end up as waste.</span></button>
+              <button type="button" aria-expanded="false"><b>Functionality</b><span class="plus" aria-hidden="true">+</span><span class="more">Turning materials into useful furniture components, like a table with a shelf for your books.</span></button>
+              <button type="button" aria-expanded="false"><b>Creativity</b><span class="plus" aria-hidden="true">+</span><span class="more">Combining sustainability with distinctive design, so every glass top looks one of a kind.</span></button>
             </div>
           </div>
-        </div>
-        <div class="commit">
-          <div><b>Reuse</b><span>Giving recovered materials another application.</span></div>
-          <div><b>Functionality</b><span>Turning materials into useful furniture components.</span></div>
-          <div><b>Creativity</b><span>Combining sustainability with distinctive design.</span></div>
+          <div class="life">
+            <p class="eyebrow">A bottle's second life</p>
+            <figure>
+              <svg id="lifeA" viewBox="0 0 300 200" role="img" aria-label="A green glass bottle lying on its side">
+                <ellipse cx="150" cy="176" rx="110" ry="9" fill="var(--ink)" opacity="0.09"/>
+                <g transform="rotate(-8 150 110)">
+                  <path d="M64 96h86c26 0 52-4 76-4 20 0 28 8 28 18s-8 18-28 18c-24 0-50-4-76-4H64c-14 0-22-8-22-14s8-14 22-14z" fill="var(--glass)" stroke="var(--ink)" stroke-width="2.2"/>
+                  <rect x="246" y="100" width="16" height="20" rx="3" fill="var(--glass)" stroke="var(--ink)" stroke-width="2.2"/>
+                  <path d="M78 102h66" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+                </g>
+              </svg>
+              <svg id="lifeB" viewBox="0 0 300 200" role="img" aria-label="A tabletop with glass pieces set in resin" hidden>
+                <ellipse cx="150" cy="176" rx="110" ry="9" fill="var(--ink)" opacity="0.09"/>
+                <clipPath id="lc"><polygon points="40,96 80,70 220,70 262,96 220,124 80,124"/></clipPath>
+                <polygon points="40,96 80,70 220,70 262,96 220,124 80,124" fill="var(--teak)" opacity="0.28"/>
+                <g clip-path="url(#lc)">
+                  <polygon points="80,76 112,72 100,92" fill="#276B31"/>
+                  <polygon points="122,72 158,76 146,96 120,90" fill="#C7842C"/>
+                  <polygon points="168,74 204,72 192,94" fill="#3D8F4A"/>
+                  <polygon points="48,96 84,88 90,108 58,112" fill="#8E4A22"/>
+                  <polygon points="98,98 140,94 142,116 106,118" fill="#276B31"/>
+                  <polygon points="152,100 190,98 196,118 158,122" fill="#C7842C"/>
+                  <polygon points="204,92 252,96 226,118" fill="#3D8F4A"/>
+                </g>
+                <polygon points="40,96 80,70 220,70 262,96 220,124 80,124" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M80 124v50M96 126v50M204 126v50M220 124v50" fill="none" stroke="var(--ink)" stroke-width="2.4"/>
+              </svg>
+              <figcaption id="lifeCap">Used colored soft-drink bottles are collected from the community.</figcaption>
+            </figure>
+            <div class="toggle">
+              <button type="button" id="lifeBtn1" aria-pressed="true">Before</button>
+              <button type="button" id="lifeBtn2" aria-pressed="false">After</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -305,181 +402,164 @@ footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; jus
     <section id="katglass">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">Our first product</p>
-          <h2>KatGlass Lounge Set</h2>
+          <p class="eyebrow">KatGlass Lounge Set</p>
+          <h2>Two pieces, one set</h2>
         </div>
-        <p style="margin-bottom:32px">The KatGlass Lounge Set is a katsa fabric bean bag chair and a wooden table with a built-in shelf. The bean bag is filled with fiberfill, so it is soft for reading or resting. The table is decorative and practical: its top is set with broken glass pieces in resin, and the shelf below holds books that students can read for entertainment.</p>
-        <div class="product">
-          <article class="item">
+        <div class="tabs" role="tablist" aria-label="KatGlass pieces">
+          <button class="tab" role="tab" id="t-bag" aria-controls="p-bag" aria-selected="true" type="button">Bean bag chair</button>
+          <button class="tab" role="tab" id="t-table" aria-controls="p-table" aria-selected="false" type="button" tabindex="-1">KatGlass table</button>
+        </div>
+        <div class="pane" id="p-bag" role="tabpanel" aria-labelledby="t-bag">
+          <div>
             <h3>Bean bag chair</h3>
-            <p class="tag">Comfort made for your breaks</p>
-            <svg viewBox="0 0 260 220" role="img" aria-label="Bean bag chair">
-              <ellipse cx="130" cy="200" rx="104" ry="10" fill="var(--ink)" opacity="0.09"/>
-              <path d="M40 180C20 120 34 62 84 40c38-16 70 6 86 40 14-6 30 4 34 26 8 34 8 66-14 84-26 18-96 18-150 2z" fill="var(--rust)"/>
-              <path d="M54 76c30-18 56-4 68 22 10 22 2 48-22 58" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
-              <path d="M84 124c16-10 40-8 56 4" fill="none" stroke="var(--panel)" stroke-width="2" opacity="0.5"/>
-            </svg>
-            <p>Made with katsa fabric and filled with soft fiber fill for a cozy seat that matches the rest of the set.</p>
-            <ul>
+            <p class="tag" style="margin-bottom:14px">Comfort made for your breaks</p>
+            <p>Take a moment to relax in a chair made for resting, reading or simply enjoying your free time. It is made with katsa fabric and filled with soft fiber fill, for a cozy seat that goes with the rest of the set.</p>
+            <ul class="feats">
               <li>Soft and comfortable seating</li>
               <li>Lightweight and easy to move</li>
               <li>Katsa fabric exterior</li>
               <li>Fiber-filled cushioning</li>
             </ul>
-          </article>
-          <article class="item">
+          </div>
+          <svg viewBox="0 0 260 220" role="img" aria-label="Bean bag chair">
+            <ellipse cx="130" cy="200" rx="104" ry="10" fill="var(--ink)" opacity="0.09"/>
+            <path class="bagfill" d="M40 180C20 120 34 62 84 40c38-16 70 6 86 40 14-6 30 4 34 26 8 34 8 66-14 84-26 18-96 18-150 2z"/>
+            <path class="fold" d="M54 76c30-18 56-4 68 22 10 22 2 48-22 58"/>
+            <path class="fold" d="M84 124c16-10 40-8 56 4"/>
+          </svg>
+        </div>
+        <div class="pane" id="p-table" role="tabpanel" aria-labelledby="t-table" hidden>
+          <div>
             <h3>KatGlass table</h3>
-            <p class="tag">Beauty meets functionality</p>
-            <svg viewBox="0 0 260 220" role="img" aria-label="KatGlass table with a colored glass top and a shelf">
-              <defs><clipPath id="t2"><polygon points="30,70 62,52 202,52 232,70 202,90 62,90"/></clipPath></defs>
-              <ellipse cx="130" cy="206" rx="104" ry="9" fill="var(--ink)" opacity="0.09"/>
-              <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
-                <path d="M62 90v108M76 92v108M190 90v108M204 90v108"/>
-                <path d="M76 160h128M62 168h128"/>
-              </g>
-              <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="var(--teak)" opacity="0.28"/>
-              <g clip-path="url(#t2)">
-                <polygon points="64,58 92,56 82,72" fill="var(--glass)"/>
-                <polygon points="102,56 132,58 122,74 100,70" fill="#C7842C"/>
-                <polygon points="144,56 176,56 164,72" fill="#3D8F4A"/>
-                <polygon points="184,58 208,60 198,74 180,70" fill="#8E4A22"/>
-                <polygon points="38,70 66,64 70,80 46,84" fill="#C7842C"/>
-                <polygon points="80,74 110,72 114,88 88,88" fill="var(--glass)"/>
-                <polygon points="124,76 154,74 156,90 130,90" fill="#8E4A22"/>
-                <polygon points="168,76 200,74 212,86 176,90" fill="#C7842C"/>
-                <polygon points="208,70 230,70 214,86" fill="#3D8F4A"/>
-              </g>
-              <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
-              <rect x="86" y="150" width="14" height="10" fill="var(--rust)" opacity="0.8"/>
-              <rect x="102" y="146" width="10" height="14" fill="var(--glass)" opacity="0.8"/>
-              <rect x="114" y="152" width="16" height="8" fill="var(--teak)" opacity="0.9"/>
-            </svg>
-            <p>More than a table. The top combines an artistic surface of recovered colored glass in resin with practical storage underneath, so books and notebooks stay within reach.</p>
-            <ul>
+            <p class="tag" style="margin-bottom:14px">Beauty meets functionality</p>
+            <p>More than just a table. The top has recovered pieces of colored glass embedded in resin, and beneath it is a shelf where you can keep books and notebooks within easy reach.</p>
+            <ul class="feats">
               <li>Decorative resin-and-glass tabletop</li>
               <li>Built-in shelf</li>
               <li>Functional table surface</li>
             </ul>
-          </article>
+          </div>
+          <svg viewBox="0 0 260 220" role="img" aria-label="KatGlass table with a colored glass top and a shelf">
+            <clipPath id="t2"><polygon points="30,70 62,52 202,52 232,70 202,90 62,90"/></clipPath>
+            <ellipse cx="130" cy="206" rx="104" ry="9" fill="var(--ink)" opacity="0.09"/>
+            <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round">
+              <path d="M62 90v108M76 92v108M190 90v108M204 90v108"/>
+              <path d="M76 160h128M62 168h128"/>
+            </g>
+            <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="var(--teak)" opacity="0.28"/>
+            <g clip-path="url(#t2)">
+              <polygon class="shard g1" points="64,58 92,56 82,72"/>
+              <polygon class="shard g2" points="102,56 132,58 122,74 100,70"/>
+              <polygon class="shard g3" points="144,56 176,56 164,72"/>
+              <polygon class="shard g4" points="184,58 208,60 198,74 180,70"/>
+              <polygon class="shard g2" points="38,70 66,64 70,80 46,84"/>
+              <polygon class="shard g1" points="80,74 110,72 114,88 88,88"/>
+              <polygon class="shard g4" points="124,76 154,74 156,90 130,90"/>
+              <polygon class="shard g2" points="168,76 200,74 212,86 176,90"/>
+              <polygon class="shard g3" points="208,70 230,70 214,86"/>
+            </g>
+            <polygon points="30,70 62,52 202,52 232,70 202,90 62,90" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+            <rect x="86" y="146" width="14" height="14" fill="var(--rust)" opacity="0.85"/>
+            <rect x="102" y="142" width="10" height="18" fill="var(--glass)" opacity="0.85"/>
+            <rect x="114" y="150" width="18" height="10" fill="var(--teak)"/>
+          </svg>
         </div>
-        <p class="note">Designed with students in mind, for the vacant hours when a comfortable place to rest, read or study is hard to find.</p>
+        <p style="margin-top:22px;color:var(--muted);font-size:14px">The KatGlass Lounge Set is designed for students and anyone who needs a comfortable place to rest, read or study.</p>
       </div>
     </section>
 
     <section id="materials">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">What goes into it</p>
+          <p class="eyebrow">Materials</p>
           <h2>What makes KatGlass, KatGlass?</h2>
         </div>
-        <p style="margin-bottom:28px">Two distinctive materials come together in one functional and eye-catching furniture set. Glass is one of the major causes of waste, and large volumes of it still end up in landfill. Textile production adds to solid waste as well, so both get a second use here.</p>
-        <ul class="mats">
-          <li><span>1</span><div><b>Katsa fabric</b><small>Outer covering of the bean bag</small></div></li>
-          <li><span>2</span><div><b>Plastic sack bag</b><small>Protective layer on the bottom panel of the bean bag</small></div></li>
-          <li><span>3</span><div><b>Fiber fill</b><small>Softness, shape and cushioning for the bean bag</small></div></li>
-          <li><span>4</span><div><b>Colored glass bottles</b><small>Broken pieces decorate the tabletop</small></div></li>
-          <li><span>5</span><div><b>Epoxy resin</b><small>Secures the glass and gives a smooth top</small></div></li>
-          <li><span>6</span><div><b>Wood</b><small>Base of the table with the built-in shelf</small></div></li>
-          <li><span>7</span><div><b>Nails</b><small>Assemble the wooden pieces of the base</small></div></li>
-          <li><span>8</span><div><b>Paint</b><small>Enhances the table and adds a protective layer</small></div></li>
-        </ul>
-        <div class="make">
-          <div>
-            <h3>Making the bean bag</h3>
-            <ol>
-              <li>Cut the katsa fabric for the side boxing, top panel and bottom panel.</li>
-              <li>Cut the plastic sack bag to the size of the bottom panel pattern.</li>
-              <li>Sew the katsa bottom panel and the plastic sack bag together.</li>
-              <li>Sew the fabric pieces together, leaving an opening for the fiber fill.</li>
-              <li>Fill with fiber fill until the volume and softness feel right.</li>
-              <li>Close the opening to keep the fill inside.</li>
-            </ol>
-          </div>
-          <div>
-            <h3>Making the table</h3>
-            <ol>
-              <li>Measure and cut the wood for the table top and the base.</li>
-              <li>Nail the wooden pieces together.</li>
-              <li>Paint the assembled table.</li>
-              <li>Clean the discarded glass bottles, then break them into shapes using thick fabric as cover and gloves for the hands.</li>
-              <li>Arrange the glass pieces on the table top.</li>
-              <li>Put a thick layer of masking tape around the top edge so the resin cannot leak.</li>
-              <li>Pour epoxy resin over the glass until it is covered.</li>
-              <li>Let it harden for the curing time of the resin used.</li>
-            </ol>
+        <p style="margin-bottom:22px">Two distinctive materials come together in one functional and eye-catching furniture set. Tap any material to see what it does.</p>
+        <div class="filters" id="matFilters" role="group" aria-label="Filter materials">
+          <button class="tab" type="button" data-f="all" aria-pressed="true" style="">All</button>
+          <button class="tab" type="button" data-f="bag" aria-pressed="false">Bean bag</button>
+          <button class="tab" type="button" data-f="table" aria-pressed="false">Table</button>
+        </div>
+        <div class="mat-grid">
+          <div class="chips" id="chips"></div>
+          <div class="detail" id="matDetail" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="made">
+      <div class="sheet">
+        <div class="sec-head">
+          <p class="eyebrow">Behind the furniture</p>
+          <h2>How it's made</h2>
+        </div>
+        <div class="tabs" role="group" aria-label="Choose a piece">
+          <button class="tab" type="button" id="mk-table" aria-pressed="true">Table</button>
+          <button class="tab" type="button" id="mk-bag" aria-pressed="false">Bean bag</button>
+        </div>
+        <div class="steps">
+          <ol class="sl" id="stepList"></ol>
+          <div class="now" aria-live="polite">
+            <p class="count" id="stepCount"></p>
+            <h3 id="stepTitle"></h3>
+            <p id="stepText"></p>
+            <div class="bar-track" aria-hidden="true"><div class="bar-fill" id="stepBar"></div></div>
+            <div class="row">
+              <button class="btn" type="button" id="prev">Back</button>
+              <button class="btn solid" type="button" id="next">Next step</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="compare">
+    <section id="order">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">Competitive advantage</p>
-          <h2>How we compare</h2>
+          <p class="eyebrow">Ask for your set</p>
+          <h2>Tell us what you like</h2>
         </div>
-        <p style="margin-bottom:28px">Amber Heart competes with established names such as Mandaue Foam and IKEA Philippines. Their furniture overlaps with parts of KatGlass, but none of it combines comfort, storage, design and material reuse in one set made for students.</p>
-        <div class="scroll" tabindex="0" role="region" aria-label="Competitor comparison table">
-          <table>
-            <thead>
-              <tr><th scope="col"></th><th scope="col" class="us">Amber Heart Furnitures</th><th scope="col">Mandaue Foam</th><th scope="col">IKEA PH</th></tr>
-            </thead>
-            <tbody>
-              <tr><th scope="row">Features</th><td class="us">Bean bag and wooden table with built-in cabinet; tabletop uses repurposed colored glass pieces secured with resin.</td><td>Wide range of furniture, including tables, seating, storage and customized furniture.</td><td>A variety of ready-made furniture for tables, seating and storage.</td></tr>
-              <tr><th scope="row">Pricing</th><td class="us">Affordable and practical furniture set for its target users.</td><td>Different price ranges depending on the furniture and customization.</td><td>Different price points, focused on functional and affordable furniture.</td></tr>
-              <tr><th scope="row">Target audience</th><td class="us">Students and users who need a comfortable space for resting, reading and studying.</td><td>General household, office and commercial furniture consumers.</td><td>General consumers looking for functional, ready-made furniture.</td></tr>
-              <tr><th scope="row">Design and style</th><td class="us">A comfortable lounge design with a glass-decorated tabletop and wooden elements.</td><td>Various furniture styles and designs for different spaces.</td><td>Simple, modern and functional designs.</td></tr>
-              <tr><th scope="row">Unique selling point</th><td class="us">Comfort, functionality, storage, aesthetic design and repurposed materials in one furniture set.</td><td>Wide product selection with customization options.</td><td>Wide range of functional and ready-made furniture.</td></tr>
-              <tr><th scope="row">Competitive advantage</th><td class="us">Focus differentiation through a student-oriented concept that combines seating, table, storage and material reuse.</td><td>Broad product selection and customization services.</td><td>Broad product range and functional furniture designs.</td></tr>
-            </tbody>
-          </table>
+        <div class="form">
+          <form id="orderForm" class="fields" novalidate>
+            <label for="fName">Your name<input id="fName" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+            <label for="fItem">What are you looking for
+              <select id="fItem">
+                <option value="set">Full KatGlass Lounge Set</option>
+                <option value="bag">Bean bag chair only</option>
+                <option value="table">KatGlass table only</option>
+              </select>
+            </label>
+            <div class="summary" id="fSummary"></div>
+            <label for="fNote">Anything else<textarea id="fNote" placeholder="Where you will use it, preferred size, questions about price"></textarea></label>
+            <div><button class="btn solid" type="submit">Write my message</button></div>
+          </form>
+          <div class="out">
+            <h3>Your message</h3>
+            <p style="font-size:14px;color:var(--muted)">Fill in the form and we will write a message for you. Copy it, then send it to our email or Facebook page.</p>
+            <textarea id="fOut" readonly aria-label="Generated message" placeholder="Your message will appear here."></textarea>
+            <div class="row">
+              <button class="btn" type="button" id="fCopy">Copy message</button>
+              <span class="status" id="fStatus" role="status"></span>
+            </div>
+          </div>
         </div>
-        <p class="note">Student need: research by Hall and Kapa (2015) found that students value study spaces with comfortable furniture and enough table space.</p>
       </div>
     </section>
 
-    <section id="swot">
+    <section id="faq">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">Where we stand</p>
-          <h2>SWOT analysis</h2>
+          <p class="eyebrow">Questions</p>
+          <h2>Good to know</h2>
         </div>
-        <div class="swot">
-          <div class="quad q-s">
-            <h3><i>S</i>Strengths</h3>
-            <h4>Company</h4>
-            <ul><li><b>Good location.</b> Many potential customers pass by, which makes it a good place to attract them.</li></ul>
-            <h4>Product</h4>
-            <ul>
-              <li><b>Affordable.</b> Glass tables paired with a soft, bean-shaped couch at a fair price.</li>
-              <li><b>Eco-friendly.</b> Made with recyclable materials such as katsa and broken glass.</li>
-              <li><b>Aesthetic design.</b> Tables come in a variety of designs so customers can choose their own.</li>
-            </ul>
-          </div>
-          <div class="quad">
-            <h3><i>W</i>Weaknesses</h3>
-            <h4>Company</h4>
-            <ul><li><b>New business.</b> Low sales, little brand recognition and few loyal customers so far.</li></ul>
-            <h4>Product</h4>
-            <ul><li><b>Long production.</b> Customization can lengthen production time.</li></ul>
-          </div>
-          <div class="quad">
-            <h3><i>O</i>Opportunities</h3>
-            <h4>Company</h4>
-            <ul>
-              <li><b>Growing eco-conscious market.</b> More consumers favor eco-friendly products.</li>
-              <li><b>Market expansion.</b> Room to grow into regions that prioritize eco-friendly products.</li>
-            </ul>
-            <h4>Product</h4>
-            <ul><li><b>Product expansion.</b> The same sustainable design concept can carry a wider product line.</li></ul>
-          </div>
-          <div class="quad">
-            <h3><i>T</i>Threats</h3>
-            <h4>Company</h4>
-            <ul><li><b>Strong competition.</b> IKEA and Mandaue Foam have strong brands and lower production costs.</li></ul>
-            <h4>Product</h4>
-            <ul><li><b>Logistics.</b> Glass and resin are fragile, and damage in delivery could hurt our reputation.</li></ul>
-          </div>
+        <div class="faq">
+          <details open><summary>What is the KatGlass Lounge Set made of?</summary><p>A bean bag covered in katsa fabric and filled with fiber fill, and a wooden table with a built-in shelf. The tabletop is decorated with broken pieces of recovered colored glass set in epoxy resin.</p></details>
+          <details><summary>Is it eco-friendly?</summary><p>Yes. The glass comes from used colored soft-drink bottles and the bean bag uses katsa fabric and a recycled plastic sack layer, so materials that would be thrown away get another use.</p></details>
+          <details><summary>Is the glass safe to touch?</summary><p>The glass pieces are completely covered by a smooth layer of epoxy resin, so the top is a flat, finished surface.</p></details>
+          <details><summary>Will every table look the same?</summary><p>No. The pieces of glass are arranged by hand and our tables come in a variety of designs, so you can choose the one you like.</p></details>
+          <details><summary>Who is it for?</summary><p>Students and anyone who wants a comfortable place to rest, read or study, at home or in the classroom.</p></details>
+          <details><summary>How much is it?</summary><p>We make furniture at a lower price than most. Use the form above to tell us what you want and we will give you the current price.</p></details>
+          <details><summary>Where are you?</summary><p>Brgy. San Benito, San Pablo City, Laguna, Philippines.</p></details>
         </div>
       </div>
     </section>
@@ -487,22 +567,17 @@ footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; jus
     <section id="team">
       <div class="sheet">
         <div class="sec-head">
-          <p class="eyebrow">Group 5 · 2MM1</p>
-          <h2>The team</h2>
+          <p class="eyebrow">The people behind it</p>
+          <h2>Meet the team</h2>
         </div>
-        <div class="chart">
-          <div class="owner"><b>Ma. Francis Lodz Besilos</b><span>Owner Manager</span></div>
-          <p class="owner-note" style="margin-top:12px">Oversees daily operations, directs all departments, sets company goals and makes important business decisions.</p>
-          <div class="stem"></div>
-          <div class="team">
-            <div class="person"><b>Luisa Marie Rañola</b><span>Admin and Finance</span><p>Manages records and documents, tracks income and expenses, prepares budgets and financial reports.</p></div>
-            <div class="person"><b>Angie Formalejo</b><span>Sales and Marketing</span><p>Promotes the furniture, handles customer inquiries, develops sales strategies and keeps customer relationships healthy.</p></div>
-            <div class="person"><b>Michaela Natad</b><span>Purchasing</span><p>Sources furniture and materials, compares supplier prices, monitors orders and inventory.</p></div>
-            <div class="person"><b>Reymark Malasmas</b><span>Staff</span><p>Assists customers, organizes and displays furniture, keeps the showroom clean and orderly.</p></div>
-            <div class="person"><b>Brent Andrei Sorima</b><span>Staff</span><p>Helps with product handling and delivery preparation, checks product condition, assists with inventory and store upkeep.</p></div>
-          </div>
+        <div class="team">
+          <div class="person"><b>Ma. Francis Lodz Besilos</b><span>Owner Manager</span><p>Leads the company, sets goals and makes the big decisions.</p></div>
+          <div class="person"><b>Luisa Marie Rañola</b><span>Admin and Finance</span><p>Keeps the records, budgets and finances in order.</p></div>
+          <div class="person"><b>Angie Formalejo</b><span>Sales and Marketing</span><p>Answers your questions and helps you find the right furniture.</p></div>
+          <div class="person"><b>Michaela Natad</b><span>Purchasing</span><p>Finds our materials and suppliers and keeps stock ready.</p></div>
+          <div class="person"><b>Reymark Malasmas</b><span>Staff</span><p>Assists customers and keeps the showroom neat.</p></div>
+          <div class="person"><b>Brent Andrei Sorima</b><span>Staff</span><p>Checks products and prepares orders for delivery.</p></div>
         </div>
-        <p class="note" style="text-align:center;margin-inline:auto">Submitted to Dr. Madelon C. Briz · Marketing Management (MM 101) · Laguna State Polytechnic University, San Pablo City Campus · November 2026</p>
       </div>
     </section>
 
@@ -512,14 +587,13 @@ footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; jus
           <div class="stack">
             <p class="eyebrow">Visit or write</p>
             <h2>Connect with us</h2>
-            <p>The shop sits in a busy commercial district of San Pablo City, close to PUV loading zones, shopping malls and fast-food chains, with hardware stores and bakeries nearby for wood and katsa fabric.</p>
+            <p>Find us in a busy part of San Pablo City, close to jeepney stops, malls and fast-food chains.</p>
           </div>
           <div class="lines">
             <div class="line"><div><small>Facebook</small><span>AmberHeart Furnitures</span></div></div>
             <div class="line"><div><small>Email</small><span>amberheartfurnitures@gmail.com</span></div><button class="copy" type="button" data-copy="amberheartfurnitures@gmail.com">Copy</button></div>
             <div class="line"><div><small>Phone</small><span>+63 912 345 6789</span></div><button class="copy" type="button" data-copy="+63 912 345 6789">Copy</button></div>
-            <div class="line"><div><small>Telephone</small><span>(02) 8321-4567</span></div><button class="copy" type="button" data-copy="(02) 8321-4567">Copy</button></div>
-            <div class="line"><div><small>Location</small><span>San Pablo City, Laguna, Philippines</span></div></div>
+            <div class="line"><div><small>Address</small><span>Brgy. San Benito, San Pablo City, Laguna, Philippines</span></div></div>
           </div>
         </div>
       </div>
@@ -527,36 +601,236 @@ footer { padding-block: 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; jus
   </main>
 
   <footer>
-    <span>Amber Heart Furnitures · Group 5, 2MM1</span>
+    <span>Amber Heart Furnitures · San Pablo City, Laguna</span>
     <span>Reuse · Functionality · Creativity</span>
   </footer>
 </div>
 
 <script>
-document.querySelectorAll('.copy').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    var text = btn.getAttribute('data-copy');
-    var done = function () {
-      btn.textContent = 'Copied';
-      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
-    };
-    var fallback = function () {
-      var span = btn.parentElement.querySelector('span');
-      try {
-        var r = document.createRange();
-        r.selectNodeContents(span);
-        var s = window.getSelection();
-        s.removeAllRanges();
-        s.addRange(r);
-      } catch (e) {}
-      btn.textContent = 'Selected';
-      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
-    };
-    try {
-      navigator.clipboard.writeText(text).then(done, fallback);
-    } catch (e) { fallback(); }
+(function () {
+  var root = document.documentElement;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* theme toggle */
+  $('#theme').addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
   });
-});
+
+  /* color swatches */
+  var glass = {
+    mixed: { n: 'Mixed', c: ['#276B31', '#C7842C', '#3D8F4A', '#8E4A22'] },
+    green: { n: 'Green', c: ['#276B31', '#3D8F4A', '#1F5A2B', '#5BAA66'] },
+    amber: { n: 'Amber', c: ['#C7842C', '#E0A040', '#A8651C', '#D99A3A'] },
+    brown: { n: 'Brown', c: ['#8E4A22', '#A35A2C', '#6E3818', '#B5703F'] }
+  };
+  var bag = {
+    rust: { n: 'Rust', c: '#7B3F1E' },
+    espresso: { n: 'Espresso', c: '#4A3A30' },
+    olive: { n: 'Olive', c: '#6B6B3A' },
+    sand: { n: 'Sand', c: '#C9B48F' }
+  };
+  var pick = { glass: 'mixed', bag: 'rust' };
+  function press(group, key) {
+    $$('.sw', group).forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-k') === key)); });
+  }
+  $('#glassSw').addEventListener('click', function (e) {
+    var b = e.target.closest('.sw'); if (!b) return;
+    var k = b.getAttribute('data-k'); pick.glass = k;
+    glass[k].c.forEach(function (c, i) { root.style.setProperty('--gc' + (i + 1), c); });
+    press(this, k); summary();
+  });
+  $('#bagSw').addEventListener('click', function (e) {
+    var b = e.target.closest('.sw'); if (!b) return;
+    var k = b.getAttribute('data-k'); pick.bag = k;
+    root.style.setProperty('--bag', bag[k].c);
+    press(this, k); summary();
+  });
+
+  /* commitments accordion */
+  $$('#commit button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('aria-expanded') === 'true';
+      $$('#commit button').forEach(function (x) { x.setAttribute('aria-expanded', 'false'); });
+      b.setAttribute('aria-expanded', String(!open));
+    });
+  });
+
+  /* bottle before / after */
+  var caps = {
+    before: 'Used colored soft-drink bottles are collected from the community.',
+    after: 'The glass is broken into pieces, arranged by hand and set in resin to become a tabletop.'
+  };
+  function life(after) {
+    $('#lifeA').hidden = after; $('#lifeB').hidden = !after;
+    $('#lifeBtn1').setAttribute('aria-pressed', String(!after));
+    $('#lifeBtn2').setAttribute('aria-pressed', String(after));
+    $('#lifeCap').textContent = after ? caps.after : caps.before;
+  }
+  $('#lifeBtn1').addEventListener('click', function () { life(false); });
+  $('#lifeBtn2').addEventListener('click', function () { life(true); });
+
+  /* product tabs */
+  var tabs = [$('#t-bag'), $('#t-table')];
+  function showTab(t) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute('aria-selected', String(on));
+      x.tabIndex = on ? 0 : -1;
+      $('#' + x.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { showTab(t); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        var n = tabs[(i + 1) % tabs.length]; showTab(n); n.focus();
+      }
+    });
+  });
+
+  /* materials explorer */
+  var mats = [
+    { id: 'katsa', n: 'Katsa fabric', w: 'bag', k: 'Recovered', t: 'Outer covering of the bean bag', d: 'A woven textile with a simple, textured finish. It forms the fabric shell that holds the cushioning inside.', c: '#C9B48F' },
+    { id: 'sack', n: 'Plastic sack bag', w: 'bag', k: 'Recovered', t: 'Protective layer on the bottom panel', d: 'Sewn to the katsa bottom panel to protect the underside of the bean bag.', c: '#B8B2A4' },
+    { id: 'fill', n: 'Fiber fill', w: 'bag', k: 'Cushioning', t: 'Softness and shape', d: 'The filling that gives the bean bag its volume, softness and cozy feel.', c: '#EFE6D4' },
+    { id: 'glass', n: 'Colored glass bottles', w: 'table', k: 'Recovered', t: 'Decorative tabletop pieces', d: 'Sourced from used colored soft-drink bottles. The broken pieces are arranged to create colorful patterns on the tabletop.', c: '#276B31' },
+    { id: 'resin', n: 'Epoxy resin', w: 'table', k: 'Finish', t: 'Holds the glass and smooths the top', d: 'Poured over the arranged glass until it is covered, then left to harden into a smooth, flat surface.', c: '#D9923A' },
+    { id: 'wood', n: 'Wood', w: 'table', k: 'Structure', t: 'Table base and shelf', d: 'Forms the base of the table, including the built-in shelf for books and notebooks.', c: '#A5693A' },
+    { id: 'nails', n: 'Nails', w: 'table', k: 'Structure', t: 'Joins the wooden pieces', d: 'Used to assemble the wooden pieces of the table base.', c: '#7C7C7C' },
+    { id: 'paint', n: 'Paint', w: 'table', k: 'Finish', t: 'Color and protection', d: 'Enhances the look of the table and adds a protective layer.', c: '#7B3F1E' }
+  ];
+  var chips = $('#chips'), det = $('#matDetail'), curMat = 'glass', filt = 'all';
+  mats.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.setAttribute('data-id', m.id); b.setAttribute('data-w', m.w);
+    b.innerHTML = '<small>' + m.k + '</small>' + m.n;
+    chips.appendChild(b);
+  });
+  function showMat(id) {
+    curMat = id;
+    var m = mats.filter(function (x) { return x.id === id; })[0];
+    $$('.chip', chips).forEach(function (c) { c.setAttribute('aria-pressed', String(c.getAttribute('data-id') === id)); });
+    det.innerHTML = '<span class="swatch" style="background:' + m.c + '"></span><p class="where">' + (m.w === 'bag' ? 'Bean bag' : 'Table') + ' · ' + m.k + '</p><h3>' + m.n + '</h3><p><b style="font-weight:500">' + m.t + '.</b> ' + m.d + '</p>';
+  }
+  chips.addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (b) showMat(b.getAttribute('data-id')); });
+  $('#matFilters').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    filt = b.getAttribute('data-f');
+    $$('#matFilters button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); x.setAttribute('aria-selected', String(x === b)); });
+    $$('.chip', chips).forEach(function (c) { c.hidden = !(filt === 'all' || c.getAttribute('data-w') === filt); });
+    var vis = mats.filter(function (m) { return filt === 'all' || m.w === filt; });
+    if (!vis.some(function (m) { return m.id === curMat; })) showMat(vis[0].id);
+  });
+  showMat('glass');
+
+  /* how it's made stepper */
+  var flows = {
+    table: [
+      ['Measure and cut', 'Measure and cut the wood for the table top and the base.'],
+      ['Assemble', 'Nail the wooden pieces together to build the table.'],
+      ['Paint', 'Paint the assembled table to enhance it and protect the wood.'],
+      ['Prepare the glass', 'Clean the discarded glass bottles, then break them into shapes. Thick fabric covers the bottle and gloves protect the hands.'],
+      ['Arrange', 'Lay the glass pieces on the table top in the pattern you like.'],
+      ['Seal the edges', 'Put a thick layer of masking tape around the top edge so the resin cannot leak.'],
+      ['Pour the resin', 'Pour epoxy resin over the glass until every piece is covered.'],
+      ['Let it cure', 'Leave it to harden for the curing time of the resin used. Then it is ready.']
+    ],
+    bag: [
+      ['Cut the katsa', 'Cut the katsa fabric for the side boxing, the top panel and the bottom panel.'],
+      ['Cut the sack', 'Cut the plastic sack bag to the size of the bottom panel pattern.'],
+      ['Sew the base', 'Sew the katsa bottom panel and the plastic sack bag together.'],
+      ['Sew the cover', 'Sew the fabric pieces together and leave an opening for the fiber fill.'],
+      ['Fill', 'Put in fiber fill until the volume and softness feel right.'],
+      ['Close', 'Close the opening so the fill stays inside.']
+    ]
+  };
+  var flow = 'table', idx = 0, list = $('#stepList');
+  function render() {
+    var s = flows[flow];
+    list.innerHTML = '';
+    s.forEach(function (st, i) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = i < idx ? 'done' : '';
+      if (i === idx) b.setAttribute('aria-current', 'step');
+      b.innerHTML = '<span>' + (i + 1) + '</span>' + st[0];
+      b.addEventListener('click', function () { idx = i; render(); });
+      li.appendChild(b); list.appendChild(li);
+    });
+    $('#stepCount').textContent = 'Step ' + (idx + 1) + ' of ' + s.length;
+    $('#stepTitle').textContent = s[idx][0];
+    $('#stepText').textContent = s[idx][1];
+    $('#stepBar').style.width = ((idx + 1) / s.length * 100) + '%';
+    $('#prev').disabled = idx === 0;
+    var last = idx === s.length - 1;
+    $('#next').textContent = last ? 'Start over' : 'Next step';
+  }
+  $('#prev').addEventListener('click', function () { if (idx > 0) { idx--; render(); } });
+  $('#next').addEventListener('click', function () { idx = idx === flows[flow].length - 1 ? 0 : idx + 1; render(); });
+  function setFlow(f) {
+    flow = f; idx = 0;
+    $('#mk-table').setAttribute('aria-pressed', String(f === 'table'));
+    $('#mk-bag').setAttribute('aria-pressed', String(f === 'bag'));
+    render();
+  }
+  $('#mk-table').addEventListener('click', function () { setFlow('table'); });
+  $('#mk-bag').addEventListener('click', function () { setFlow('bag'); });
+  render();
+
+  /* inquiry form */
+  function summary() {
+    var item = $('#fItem').value, parts = [];
+    if (item !== 'bag') parts.push('Glass: <b>' + glass[pick.glass].n + '</b>');
+    if (item !== 'table') parts.push('Bean bag: <b>' + bag[pick.bag].n + '</b>');
+    $('#fSummary').innerHTML = 'Your picks from the preview above. ' + parts.join(' · ');
+  }
+  $('#fItem').addEventListener('change', summary);
+  summary();
+  var msg = '';
+  $('#orderForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('#fName').value.trim(), item = $('#fItem').value, note = $('#fNote').value.trim();
+    var what = { set: 'the full KatGlass Lounge Set', bag: 'the KatGlass bean bag chair', table: 'the KatGlass table' }[item];
+    var lines = ['Hello Amber Heart Furnitures!', '', "I'm " + (name || '[your name]') + ' and I would like to ask about ' + what + '.'];
+    if (item !== 'bag') lines.push('Glass color: ' + glass[pick.glass].n);
+    if (item !== 'table') lines.push('Bean bag color: ' + bag[pick.bag].n);
+    if (note) lines.push('Notes: ' + note);
+    lines.push('', 'Could you tell me the current price and how long it takes to make? Thank you!');
+    msg = lines.join('\n');
+    $('#fOut').value = msg;
+    $('#fStatus').textContent = 'Message ready. Copy it and send it to amberheartfurnitures@gmail.com or our Facebook page.';
+  });
+  function flash(btn, t) {
+    var old = btn.textContent; btn.textContent = t;
+    setTimeout(function () { btn.textContent = old; }, 1600);
+  }
+  function selectEl(el) { try { el.focus(); el.select(); } catch (e) {} }
+  $('#fCopy').addEventListener('click', function () {
+    var btn = this, out = $('#fOut');
+    if (!out.value) { $('#fStatus').textContent = 'Fill in the form and press Write my message first.'; return; }
+    try {
+      navigator.clipboard.writeText(out.value).then(function () { flash(btn, 'Copied'); }, function () { selectEl(out); flash(btn, 'Selected'); });
+    } catch (e) { selectEl(out); flash(btn, 'Selected'); }
+  });
+
+  /* contact copy buttons */
+  $$('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      var fb = function () {
+        try {
+          var r = document.createRange(); r.selectNodeContents(btn.parentElement.querySelector('span'));
+          var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        } catch (e) {}
+        flash(btn, 'Selected');
+      };
+      try { navigator.clipboard.writeText(text).then(function () { flash(btn, 'Copied'); }, fb); } catch (e) { fb(); }
+    });
+  });
+})();
 </script>
 
 </body>
